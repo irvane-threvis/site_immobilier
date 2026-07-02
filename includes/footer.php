@@ -1,6 +1,6 @@
 <footer>
     <div class="footer-content">
-        <h3>ImmoFaso</h3>
+        <h3>L'Alliance immobiliere</h3>
         <p>Acheter • Louer • Investir</p>
         <p>© <?= date('Y') ?> Tous droits réservés</p>
     </div>

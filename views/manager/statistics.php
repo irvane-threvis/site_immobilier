@@ -38,7 +38,7 @@ include ROOT_PATH . 'includes/navbar.php';
     <canvas id="statsChart"></canvas>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="<?= url('assets/js/chart.min.js') ?>"></script>
 <script>
 new Chart(document.getElementById('statsChart'), {
     type: 'bar',

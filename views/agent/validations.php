@@ -21,6 +21,8 @@ include ROOT_PATH . 'includes/navbar.php';
             <tr>
                 <th>Titre</th>
                 <th>Bailleur</th>
+                <th>Email</th>
+                <th>Téléphone</th>
                 <th>Ville</th>
                 <th>Action</th>
             </tr>
@@ -28,8 +30,11 @@ include ROOT_PATH . 'includes/navbar.php';
                 <tr>
                     <td><?= htmlspecialchars($property['titre']) ?></td>
                     <td><?= htmlspecialchars($property['nom'] . ' ' . $property['prenom']) ?></td>
+                    <td><?= htmlspecialchars($property['email']) ?></td>
+                    <td><?= htmlspecialchars($property['telephone']) ?></td>
                     <td><?= htmlspecialchars($property['ville']) ?></td>
                     <td>
+                        <a class="success-btn" style="background-color: var(--primary);" href="<?= url('views/property/detail.php?id=' . $property['id']) ?>">Visualiser</a>
                         <a class="success-btn" href="<?= url('controllers/PropertyController.php?action=validate&id=' . $property['id']) ?>">Valider</a>
                         <a class="danger-btn" href="<?= url('controllers/PropertyController.php?action=refuse&id=' . $property['id']) ?>">Refuser</a>
                     </td>

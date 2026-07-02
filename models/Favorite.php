@@ -27,13 +27,20 @@ class Favorite
 
     public function getFavorites($clientId)
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT p.* FROM favorites f
-             JOIN properties p ON f.property_id = p.id
-             WHERE f.client_id = ?"
-        );
+        $sql = "SELECT p.*, GROUP_CONCAT(pi.image_path) as image_paths 
+                FROM favorites f
+                JOIN properties p ON f.property_id = p.id
+                LEFT JOIN property_images pi ON p.id = pi.property_id
+                WHERE f.client_id = ?
+                GROUP BY p.id";
+        
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$clientId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($items as &$item) {
+            $item['images'] = !empty($item['image_paths']) ? explode(',', $item['image_paths']) : [];
+        }
+        return $items;
     }
 
     public function isFavorite($clientId, $propertyId)

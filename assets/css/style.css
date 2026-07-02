@@ -56,18 +56,13 @@ a {
     box-shadow: var(--shadow);
 }
 
-.logo {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.navbar-logo img {
+    height: 45px;
+    width: auto;
+    display: block;
 }
 
-.logo-icon {
-    color: var(--accent);
-}
+
 
 .nav-links {
     display: flex;
@@ -209,35 +204,45 @@ a {
 
 /* ── Hero ── */
 .hero {
+   
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     margin-top: -64px;
     padding: 80px 20px 40px;
-    background: linear-gradient(rgba(21, 58, 94, 0.78), rgba(21, 58, 94, 0.78)),
-        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa');
-    background-size: cover;
-    background-position: center;
+    overflow: hidden;
+    min-height: 365px; /* augmente cette valeur selon ton goût */
+
 }
 
-.hero-compact {
-    padding-bottom: 32px;
+/* La vidéo en arrière-plan */
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    min-height: 600px;
 }
 
-.hero-content h1 {
-    font-size: clamp(28px, 4vw, 40px);
-    color: #fff;
-    margin-bottom: 8px;
-    font-weight: 700;
+/* Overlay sombre pour lisibilité du texte */
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
-.hero-content p {
-    font-size: 16px;
-    color: #e8eef4;
-    margin-bottom: 20px;
+/* Le contenu passe au-dessus */
+.hero-content {
+    position: relative;
+    z-index: 2;
 }
-
 /* ── Accueil : annonces visibles tout de suite ── */
 .listings-home {
     max-width: 1200px;
@@ -859,49 +864,98 @@ footer h3 {
 /* ── Détail propriété ── */
 .details-container h1 {
     color: var(--primary-dark);
-}
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 12px;
     margin-bottom: 24px;
 }
 
-.gallery-thumb {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: zoom-in;
-    border: 1px solid var(--border);
+/* ── Nouveau Slider Détails ── */
+.slider-layout {
+    margin-bottom: 30px;
 }
 
-.lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(21, 58, 94, 0.92);
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }
+.max-w-3xl { max-width: 768px; }
+.overflow-hidden { overflow: hidden; }
+.relative { position: relative; }
+.transition-transform { transition: transform; }
+.duration-500 { transition-duration: 500ms; }
+.ease-in-out { transition-timing-function: ease-in-out; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.slider-viewport {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.slider-track {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
 }
 
-.lightbox.hidden { display: none; }
 
-.lightbox img {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
+
+.slider-track img {
+    width: 100%;
+    min-width: 100%;
+    height: 550px;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
-.lightbox-close {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: #fff;
-    font-size: 36px;
+.slider-viewport {
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.slider-nav-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,.4);
+    color: white;
+    border: none;
+    border-radius: 50%;
     cursor: pointer;
+}
+
+.slider-nav-btn:hover {
+    background: rgba(0,0,0,.7);
+}
+
+.slider-nav-btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.slider-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.slider-nav-btn svg {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.prev-btn { margin-right: 8px; }
+.next-btn { margin-left: 8px; }
+
+@media (min-width: 768px) {
+    .slider-nav-btn { padding: 8px; }
+    .prev-btn { margin-right: 24px; }
+    .next-btn { margin-left: 24px; }
 }
 
 .property-meta p {
@@ -1083,15 +1137,76 @@ footer h3 {
     to { opacity: 0; transform: translateX(100%); }
 }
 
+/* ── Notifications ── */
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    max-width: 850px;
+}
+
+.notification-item {
+    background: var(--surface);
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--primary);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notification-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(30, 41, 59, 0.1);
+}
+
+.notification-item.unread {
+    background: #fdfaf3;
+    border-left-color: var(--accent);
+}
+
+.notification-icon {
+    background: var(--primary-light);
+    color: var(--primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+}
+
+.notification-body { flex: 1; }
+
+.notification-message {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.notification-time {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
 #statsChart {
-    max-width: 800px;
+    width: 80% !important;
+    max-width: 1200px;
+    height: 320px !important;
     margin: 36px auto;
     padding: 20px;
     background: var(--surface);
     border-radius: var(--radius);
     border: 1px solid var(--border);
 }
-
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .navbar {

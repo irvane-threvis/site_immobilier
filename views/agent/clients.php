@@ -4,7 +4,7 @@ require_once ROOT_PATH . 'includes/bootstrap.php';
 requireRole('agent');
 
 $stmt = $pdo->prepare(
-    "SELECT c.nom AS client_nom, c.prenom AS client_prenom
+    "SELECT c.nom AS client_nom, c.prenom AS client_prenom, c.email, c.telephone
      FROM client_agent ca
      JOIN users c ON ca.client_id = c.id
      WHERE ca.agent_id = ?"
@@ -26,11 +26,15 @@ include ROOT_PATH . 'includes/navbar.php';
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
             </tr>
             <?php foreach ($clients as $client): ?>
                 <tr>
                     <td><?= htmlspecialchars($client['client_nom']) ?></td>
                     <td><?= htmlspecialchars($client['client_prenom']) ?></td>
+                    <td><?= htmlspecialchars($client['email']) ?></td>
+                    <td><?= htmlspecialchars($client['telephone']) ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>

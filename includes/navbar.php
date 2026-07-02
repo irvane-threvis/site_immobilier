@@ -1,7 +1,14 @@
+<?php
+$unreadCount = 0;
+if (isLoggedIn() && currentUserRole() === 'agent') {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = FALSE");
+    $stmt->execute([$_SESSION['user_id']]);
+    $unreadCount = (int) $stmt->fetchColumn();
+}
+?>
 <nav class="navbar">
-    <a href="<?= url() ?>" class="logo">
-        <i class="fa-solid fa-building logo-icon"></i>
-        <span>ImmoFaso</span>
+    <a href="<?= url() ?>" class="navbar-logo">
+       <img src="<?= url('assets/images/logo.jpg') ?>" alt="logo">
     </a>
 
     <ul class="nav-links">
@@ -16,6 +23,12 @@
                 <li><a href="<?= url('views/property/create.php') ?>">+ Annonce</a></li>
             <?php elseif (currentUserRole() === 'agent'): ?>
                 <li><a href="<?= url('views/agent/validations.php') ?>">Valider</a></li>
+                <li>
+                    <a href="<?= url('views/notifications.php') ?>" title="Notifications">
+                        <i class="fa-solid fa-bell"></i>
+                        <?= $unreadCount > 0 ? "<span style='color:var(--danger); font-weight:bold;'>($unreadCount)</span>" : "" ?>
+                    </a>
+                </li>
             <?php elseif (currentUserRole() === 'manager'): ?>
                 <li><a href="<?= url('views/manager/dashboard.php') ?>">Admin</a></li>
             <?php endif; ?>

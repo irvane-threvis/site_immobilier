@@ -85,7 +85,9 @@ class VisitRequest
     "SELECT vr.*,
             p.titre,
             u.nom,
-            u.prenom
+            u.prenom,
+            u.email,
+            u.telephone
      FROM visit_requests vr
      JOIN properties p
      ON vr.property_id=p.id

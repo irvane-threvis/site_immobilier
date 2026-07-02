@@ -34,29 +34,52 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 4000);
     }
 
-    const gallery = document.getElementById('property-gallery');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.querySelector('.lightbox-close');
+    // ── Slider Logique (Détails Propriété) ──
+    const slider = document.getElementById('slider');
+    const nextButton = document.getElementById('next');
+    const prevButton = document.getElementById('prev');
 
-    if (gallery && lightbox && lightboxImg) {
-        gallery.querySelectorAll('.gallery-thumb').forEach(function (thumb) {
-            thumb.addEventListener('click', function () {
-                lightboxImg.src = this.src;
-                lightbox.classList.remove('hidden');
-            });
-        });
+    if (slider && nextButton && prevButton) {
+        let currentSlide = 0;
+        const totalSlides = slider.children.length;
 
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function () {
-                lightbox.classList.add('hidden');
-            });
+        function goToSlide(index) {
+            const slideWidth = slider.children[0].clientWidth;
+            slider.style.transform = `translateX(-${index * slideWidth}px)`;
         }
 
-        lightbox.addEventListener('click', function (e) {
-            if (e.target === lightbox) {
-                lightbox.classList.add('hidden');
-            }
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goToSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            goToSlide(currentSlide);
+        }
+
+        let slideInterval = setInterval(nextSlide, 3000);
+
+        function resetAutoSlide() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 3000);
+        }
+
+        nextButton.addEventListener('click', () => {
+            nextSlide();
+            resetAutoSlide();
         });
+
+        prevButton.addEventListener('click', () => {
+            prevSlide();
+            resetAutoSlide();
+        });
+
+        window.addEventListener('resize', () => {
+            goToSlide(currentSlide);
+        });
+
+        // Initialisation
+        goToSlide(currentSlide);
     }
 });

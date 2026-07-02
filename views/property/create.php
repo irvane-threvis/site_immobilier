@@ -1,7 +1,15 @@
 <?php
 define('ROOT_PATH', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR);
 require_once ROOT_PATH . 'includes/bootstrap.php';
+require_once ROOT_PATH . 'models/Property.php';
 requireRole('bailleur');
+
+$propertyModel = new Property($pdo);
+if (!$propertyModel->canSubmit($_SESSION['user_id'])) {
+    flash('warning', 'Vous avez atteint votre limite maximale de 5 annonces.');
+    redirect(getDashboardPath());
+    exit;
+}
 
 include ROOT_PATH . 'includes/header.php';
 include ROOT_PATH . 'includes/navbar.php';

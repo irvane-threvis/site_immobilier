@@ -1,5 +1,7 @@
 <?php
-define('ROOT_PATH', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR);
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', realpath(dirname(__DIR__, 2)) . DIRECTORY_SEPARATOR);
+}
 require_once ROOT_PATH . 'includes/bootstrap.php';
 require_once ROOT_PATH . 'models/Property.php';
 require_once ROOT_PATH . 'models/Favorite.php';
@@ -7,8 +9,18 @@ require_once ROOT_PATH . 'models/Favorite.php';
 $propertyModel = new Property($pdo);
 $property = $propertyModel->getById((int) (isset($_GET['id']) ? $_GET['id'] : 0));
 
-if (!$property || $property['status'] !== 'published') {
-    flash('error', 'Propriété introuvable.');
+// On autorise la visualisation si :
+// 1. Le bien est publié
+// 2. L'utilisateur est un manager ou un agent
+// 3. L'utilisateur est le propriétaire du bien
+$canView = $property && (
+    $property['status'] === 'published' || 
+    (isLoggedIn() && in_array(currentUserRole(), ['manager', 'agent'])) ||
+    (isLoggedIn() && (int)$property['owner_id'] === (int)$_SESSION['user_id'])
+);
+
+if (!$canView) {
+    flash('error', 'Accès restreint ou propriété introuvable.');
     redirect('biens.php');
 }
 
@@ -27,22 +39,28 @@ include ROOT_PATH . 'includes/navbar.php';
 <div class="details-container page-content">
     <h1><?= htmlspecialchars($property['titre']) ?></h1>
 
-    <div class="gallery" id="property-gallery">
-        <?php if (!empty($images)): ?>
-            <?php foreach ($images as $index => $img): ?>
-                <img src="<?= url('uploads/properties/' . $img['image_path']) ?>"
-                     alt="Photo <?= $index + 1 ?>"
-                     class="gallery-thumb"
-                     data-index="<?= $index ?>">
-            <?php endforeach; ?>
-        <?php else: ?>
-            <img src="https://picsum.photos/seed/<?= $property['id'] ?>/800/500" alt="Image" class="gallery-thumb">
-        <?php endif; ?>
-    </div>
-
-    <div id="lightbox" class="lightbox hidden">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightbox-img" src="" alt="Zoom">
+    <div class="flex items-center justify-center slider-layout">
+        <button id="prev" class="md:p-2 p-1 bg-black/30 md:mr-6 mr-2 rounded-full hover:bg-black/50 slider-nav-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <div class="w-full max-w-3xl overflow-hidden relative slider-viewport">
+            <div class="flex transition-transform duration-500 ease-in-out slider-track" id="slider">
+                <?php if (!empty($images)): ?>
+                    <?php foreach ($images as $img): ?>
+                        <img src="<?= url('uploads/properties/' . $img['image_path']) ?>" class="w-full flex-shrink-0" alt="Photo">
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <img src="<?= url('assets/img/default-property.jpg') ?>" class="w-full flex-shrink-0" alt="Pas d'image">
+                <?php endif; ?>
+            </div>
+        </div>
+        <button id="next" class="p-1 md:p-2 bg-black/30 md:ml-6 ml-2 rounded-full hover:bg-black/50 slider-nav-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
     </div>
 
     <div class="property-meta">
@@ -56,10 +74,7 @@ include ROOT_PATH . 'includes/navbar.php';
         <?= nl2br(htmlspecialchars($property['description'])) ?>
     </div>
 
-    <h3>Localisation</h3>
-    <iframe width="100%" height="400" style="border:0" loading="lazy" allowfullscreen
-        src="https://www.google.com/maps?q=<?= urlencode($property['ville'] . ' ' . $property['adresse']) ?>&output=embed">
-    </iframe>
+    
 
     <div class="action-zone">
         <?php if (isLoggedIn() && currentUserRole() === 'client'): ?>

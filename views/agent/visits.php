@@ -20,12 +20,16 @@ include ROOT_PATH . 'includes/navbar.php';
         <table class="visit-table">
             <tr>
                 <th>Client</th>
+                <th>Email</th>
+                <th>Téléphone</th>
                 <th>Bien</th>
                 <th>Action</th>
             </tr>
             <?php foreach ($visits as $visit): ?>
                 <tr>
                     <td><?= htmlspecialchars($visit['nom'] . ' ' . $visit['prenom']) ?></td>
+                    <td><?= htmlspecialchars($visit['email']) ?></td>
+                    <td><?= htmlspecialchars($visit['telephone']) ?></td>
                     <td><?= htmlspecialchars($visit['titre']) ?></td>
                     <td>
                         <a class="success-btn" href="<?= url('controllers/AgentController.php?action=approveVisit&id=' . $visit['id']) ?>">Valider</a>

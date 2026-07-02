@@ -18,14 +18,18 @@ include ROOT_PATH . 'includes/navbar.php';
         <p class="empty-msg">Aucun favori pour le moment. <a href="<?= url('views/property/list.php') ?>">Parcourir les annonces</a></p>
     <?php else: ?>
         <div class="cards">
-            <?php foreach ($favorites as $property): ?>
+            <?php foreach ($favorites as $property): 
+                $coverImage = !empty($property['images']) 
+                    ? url('uploads/properties/' . trim($property['images'][0])) 
+                    : url('assets/img/default-property.jpg');
+            ?>
                 <div class="property-card">
-                    <img src="https://picsum.photos/seed/<?= $property['id'] ?>/400/250" alt="">
+                    <img src="<?= htmlspecialchars($coverImage) ?>" alt="<?= htmlspecialchars($property['titre']) ?>">
                     <div class="property-content">
                         <h3><?= htmlspecialchars($property['titre']) ?></h3>
-                        <p>📍 <?= htmlspecialchars($property['ville']) ?></p>
-                        <p>💰 <?= number_format($property['prix'], 0, ',', ' ') ?> FCFA</p>
-                        <a href="<?= url('views/property/detail.php?id=' . $property['id']) ?>">Voir détails</a>
+                        <p>ville: <?= htmlspecialchars($property['ville']) ?></p>
+                        <p>price: <?= number_format($property['prix'], 0, ',', ' ') ?> FCFA</p>
+                        <a class="card-btn" href="<?= url('views/property/detail.php?id=' . $property['id']) ?>">Voir</a>
                         <a class="danger-btn" href="<?= url('controllers/ClientController.php?action=removeFavorite&property=' . $property['id']) ?>">Retirer</a>
                     </div>
                 </div>

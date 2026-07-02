@@ -2,8 +2,13 @@
 <?php include ROOT_PATH . 'includes/navbar.php'; ?>
 
 <section class="hero hero-compact">
+    <!-- Vidéo de fond -->
+    <video class="hero-video" autoplay muted loop playsinline>
+        <source src="assets/images/univers.mp4" type="video/mp4">
+    </video>
+
     <div class="hero-content">
-        <h1>ImmoFaso</h1>
+        <h1>L'Alliance Immobilière</h1>
         <p>Acheter • Louer • Investir au Burkina Faso</p>
         <form class="search-box" action="<?= url('biens.php') ?>" method="GET">
             <input type="text" name="q" placeholder="Ville, quartier, type de bien...">
